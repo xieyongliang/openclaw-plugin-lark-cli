@@ -58,6 +58,78 @@ Registers a single `lark_cli` tool that accepts any lark-cli subcommand string.
 { "command": "auth status" }
 ```
 
+## Testing
+
+### Step 1: Verify lark-cli authentication
+
+Run these manually in a terminal **before** testing with an agent (interactive login is not supported inside the agent):
+
+```bash
+lark-cli auth status
+```
+
+If not logged in:
+```bash
+lark-cli config init          # Enter App ID and App Secret (one-time setup)
+lark-cli auth login --recommend   # Browser-based login
+lark-cli auth status          # Confirm login succeeded
+```
+
+### Step 2: Install the plugin
+
+```bash
+# From ClawHub (after publishing)
+openclaw plugins install openclaw-plugin-lark-cli
+
+# Or link local development copy
+cd ~/work/openclaw-plugin-lark-cli && npm install
+openclaw plugins install --link ~/work/openclaw-plugin-lark-cli
+```
+
+Restart the OpenClaw gateway (via the Mac app) after installation.
+
+### Step 3: Smoke test — auth status
+
+```bash
+openclaw agent --local --session-id test-lark \
+  --message "check lark auth status"
+```
+
+Expected: agent calls `lark_cli` with `command: "auth status"` and returns login info.
+
+### Step 4: Calendar
+
+```bash
+openclaw agent --local --session-id test-lark \
+  --message "show my lark calendar agenda for today"
+```
+
+Expected: agent calls `lark_cli` with `command: "calendar +agenda"` and returns event list.
+
+### Step 5: Send a message
+
+Get your chat ID first (run manually):
+```bash
+lark-cli im chats list --format json | head -50
+```
+
+Then test via agent (replace `oc_xxx` with a real chat ID):
+```bash
+openclaw agent --local --session-id test-lark \
+  --message "send a lark message as bot to chat oc_xxx with text 'hello from openclaw agent'"
+```
+
+Expected: agent calls `lark_cli` with `command: "im +messages-send --as bot --chat-id \"oc_xxx\" --text \"hello from openclaw agent\""` and returns `{ "ok": true, ... }`.
+
+### Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `lark-cli: command not found` | Binary not in PATH | `export LARK_CLI_BIN=$(which lark-cli)` |
+| `not logged in` | Not authenticated | Run `lark-cli auth login --recommend` in terminal |
+| Plugin not loaded | Gateway not restarted | Restart via OpenClaw Mac app |
+| `Exit code 1` on send | Missing `--as bot` flag | Specify "send as bot" in your prompt |
+
 ## Custom lark-cli binary path
 
 If `lark-cli` is not on the default PATH (e.g. in a server environment), set:
