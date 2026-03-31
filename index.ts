@@ -18,9 +18,15 @@ const LARK_CLI_EXEC_TIMEOUT_MS = 30_000;
  * OpenClaw is launched as a GUI/daemon with a minimal PATH.
  */
 function buildExecEnv(): NodeJS.ProcessEnv {
-  const additions = ["/opt/homebrew/bin", "/usr/local/bin"];
+  const home = process.env.HOME ?? "";
+  const additions = [
+    `${home}/.npm-global/bin`,   // npm global prefix (npm config set prefix)
+    `${home}/.npm/bin`,          // alternate npm bin location
+    "/opt/homebrew/bin",         // Homebrew on Apple Silicon
+    "/usr/local/bin",            // Homebrew on Intel / standard installs
+  ];
   const current = process.env.PATH ?? "/usr/bin:/bin";
-  const extra = additions.filter((p) => !current.includes(p)).join(":");
+  const extra = additions.filter((p) => p !== "/bin" && !current.includes(p)).join(":");
   return {
     ...process.env,
     PATH: extra ? `${extra}:${current}` : current,
