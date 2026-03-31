@@ -1,0 +1,48 @@
+{
+  "name": "openclaw-plugin-lark-cli",
+  "version": "0.1.0",
+  "description": "OpenClaw plugin — execute Lark/Feishu operations via lark-cli (calendar, messages, docs, base, sheets, tasks, mail, and more)",
+  "type": "module",
+  "license": "MIT",
+  "keywords": [
+    "openclaw",
+    "openclaw-plugin",
+    "lark",
+    "feishu",
+    "lark-cli",
+    "calendar",
+    "messages",
+    "docs"
+  ],
+  "files": [
+    "index.ts",
+    "openclaw.plugin.json",
+    "README.md"
+  ],
+  "dependencies": {
+    "@sinclair/typebox": "^0.34.0"
+  },
+  "peerDependencies": {
+    "openclaw": ">=2026.3.22"
+  },
+  "peerDependenciesMeta": {
+    "openclaw": {
+      "optional": true
+    }
+  },
+  "openclaw": {
+    "extensions": [
+      "./index.ts"
+    ],
+    "install": {
+      "npmSpec": "openclaw-plugin-lark-cli",
+      "defaultChoice": "npm"
+    },
+    "compat": {
+      "pluginApi": ">=2026.3.22"
+    },
+    "build": {
+      "openclawVersion": "2026.3.24"
+    }
+  }
+}
