@@ -1,5 +1,5 @@
 {
-  "id": "lark-cli",
+  "id": "@xieyongliang/lark-cli",
   "name": "Lark CLI",
   "description": "Execute any lark-cli command to interact with Lark/Feishu (calendar, messages, docs, base, sheets, tasks, mail, contact, wiki, and more).",
   "capabilityTags": ["tools"],

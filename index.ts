@@ -11,13 +11,13 @@ const LARK_CLI_EXEC_TIMEOUT_MS = 30_000;
 
 /**
  * Resolve the lark-cli binary path.
- * Order: plugins.entries.lark-cli.config.binaryPath -> LARK_CLI_BIN env -> "lark-cli"
+ * Order: plugins.entries.@xieyongliang/lark-cli.config.binaryPath -> LARK_CLI_BIN env -> "lark-cli"
  */
 function resolveLarkCliBin(api: OpenClawPluginApi): string {
   const cfg = api.config as {
     plugins?: { entries?: Record<string, { config?: { binaryPath?: string } }> };
   };
-  const fromConfig = cfg?.plugins?.entries?.["lark-cli"]?.config?.binaryPath?.trim();
+  const fromConfig = cfg?.plugins?.entries?.["@xieyongliang/lark-cli"]?.config?.binaryPath?.trim();
   if (fromConfig) return fromConfig;
   return process.env.LARK_CLI_BIN?.trim() ?? "lark-cli";
 }
@@ -105,7 +105,7 @@ const LarkCliToolSchema = Type.Object(
 );
 
 export default definePluginEntry({
-  id: "lark-cli",
+  id: "@xieyongliang/lark-cli",
   name: "Lark CLI",
   description:
     "Execute any lark-cli command (Lark/Feishu calendar, messages, docs, base, sheets, tasks, etc.)",

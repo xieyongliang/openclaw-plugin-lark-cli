@@ -23,7 +23,7 @@ lark-cli auth status
 ## Installation
 
 ```bash
-openclaw plugins install lark-cli-plugin
+openclaw plugins install xieyongliang-lark-cli
 ```
 
 Or for local development:
@@ -79,7 +79,7 @@ lark-cli auth status          # Confirm login succeeded
 
 ```bash
 # From ClawHub
-openclaw plugins install lark-cli-plugin
+openclaw plugins install xieyongliang-lark-cli
 
 # Or link local development copy
 cd ~/work/openclaw-plugin-lark-cli && npm install

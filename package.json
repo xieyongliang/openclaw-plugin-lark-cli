@@ -1,6 +1,6 @@
 {
-  "name": "lark-cli-plugin",
-  "version": "0.1.0",
+  "name": "xieyongliang-lark-cli",
+  "version": "2026.4.1",
   "description": "OpenClaw plugin \u2014 execute Lark/Feishu operations via lark-cli (calendar, messages, docs, base, sheets, tasks, mail, and more)",
   "type": "module",
   "license": "MIT",
