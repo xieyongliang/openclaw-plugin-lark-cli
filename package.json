@@ -1,7 +1,7 @@
 {
-  "name": "openclaw-plugin-lark-cli",
+  "name": "lark-cli-plugin",
   "version": "0.1.0",
-  "description": "OpenClaw plugin — execute Lark/Feishu operations via lark-cli (calendar, messages, docs, base, sheets, tasks, mail, and more)",
+  "description": "OpenClaw plugin \u2014 execute Lark/Feishu operations via lark-cli (calendar, messages, docs, base, sheets, tasks, mail, and more)",
   "type": "module",
   "license": "MIT",
   "keywords": [
@@ -35,7 +35,7 @@
       "./index.ts"
     ],
     "install": {
-      "npmSpec": "openclaw-plugin-lark-cli",
+      "npmSpec": "lark-cli-plugin",
       "defaultChoice": "npm"
     },
     "compat": {
