@@ -2,15 +2,25 @@ import { exec } from "node:child_process";
 import { promisify } from "node:util";
 import { Type } from "@sinclair/typebox";
 import { jsonResult, readStringParam } from "openclaw/plugin-sdk/agent-runtime";
-import type { AnyAgentTool } from "openclaw/plugin-sdk/plugin-entry";
+import type { AnyAgentTool, OpenClawPluginApi } from "openclaw/plugin-sdk/plugin-entry";
 import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
 
 const execAsync = promisify(exec);
 
-// Allow override via env var; fallback to bare name relying on PATH.
-const LARK_CLI_BIN = process.env.LARK_CLI_BIN ?? "lark-cli";
-
 const LARK_CLI_EXEC_TIMEOUT_MS = 30_000;
+
+/**
+ * Resolve the lark-cli binary path.
+ * Order: plugins.entries.lark-cli.config.binaryPath -> LARK_CLI_BIN env -> "lark-cli"
+ */
+function resolveLarkCliBin(api: OpenClawPluginApi): string {
+  const cfg = api.config as {
+    plugins?: { entries?: Record<string, { config?: { binaryPath?: string } }> };
+  };
+  const fromConfig = cfg?.plugins?.entries?.["lark-cli"]?.config?.binaryPath?.trim();
+  if (fromConfig) return fromConfig;
+  return process.env.LARK_CLI_BIN?.trim() ?? "lark-cli";
+}
 
 /**
  * Build the exec environment, augmenting PATH with common install locations
@@ -39,6 +49,7 @@ function buildExecEnv(): NodeJS.ProcessEnv {
  */
 async function runLarkCli(
   args: string,
+  bin: string,
 ): Promise<{ stdout: string; stderr: string; exitCode: number }> {
   // Avoid duplicate --format flags if the user already specified one.
   const hasFormat = /--format\b/.test(args);
@@ -46,7 +57,7 @@ async function runLarkCli(
 
   try {
     const { stdout, stderr } = await execAsync(
-      `${LARK_CLI_BIN} ${fullArgs}`,
+      `${bin} ${fullArgs}`,
       {
         timeout: LARK_CLI_EXEC_TIMEOUT_MS,
         env: buildExecEnv(),
@@ -99,6 +110,7 @@ export default definePluginEntry({
   description:
     "Execute any lark-cli command (Lark/Feishu calendar, messages, docs, base, sheets, tasks, etc.)",
   register(api) {
+    const larkCliBin = resolveLarkCliBin(api);
     api.registerTool({
       name: "lark_cli",
       label: "Lark CLI",
@@ -115,7 +127,7 @@ export default definePluginEntry({
           return jsonResult({ error: "'command' parameter is required." });
         }
 
-        const { stdout, stderr, exitCode } = await runLarkCli(command.trim());
+        const { stdout, stderr, exitCode } = await runLarkCli(command.trim(), larkCliBin);
 
         if (exitCode !== 0) {
           return jsonResult({
