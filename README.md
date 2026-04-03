@@ -23,7 +23,7 @@ lark-cli auth status
 ## Installation
 
 ```bash
-openclaw plugins install openclaw-plugin-lark-cli
+openclaw plugins install lark-cli-plugin
 ```
 
 Or for local development:
@@ -78,8 +78,8 @@ lark-cli auth status          # Confirm login succeeded
 ### Step 2: Install the plugin
 
 ```bash
-# From ClawHub (after publishing)
-openclaw plugins install openclaw-plugin-lark-cli
+# From ClawHub
+openclaw plugins install lark-cli-plugin
 
 # Or link local development copy
 cd ~/work/openclaw-plugin-lark-cli && npm install
@@ -130,13 +130,35 @@ Expected: agent calls `lark_cli` with `command: "im +messages-send --as bot --ch
 | Plugin not loaded | Gateway not restarted | Restart via OpenClaw Mac app |
 | `Exit code 1` on send | Missing `--as bot` flag | Specify "send as bot" in your prompt |
 
-## Custom lark-cli binary path
+## Configuration
 
-If `lark-cli` is not on the default PATH (e.g. in a server environment), set:
+This plugin has no API credentials to configure — authentication is handled by `lark-cli` itself (see Prerequisites above).
+
+### Optional: custom lark-cli binary path
+
+If `lark-cli` is not on the default PATH (e.g. on a server or in a Docker environment), you can override the binary path in three ways, in priority order:
+
+**1. Plugin config (persisted, recommended for servers):**
+
+```bash
+openclaw config set plugins.entries.lark-cli.config.binaryPath /path/to/lark-cli
+```
+
+**2. Environment variable (session-scoped):**
 
 ```bash
 export LARK_CLI_BIN=/path/to/lark-cli
 ```
+
+**3. Auto-detect (default)**
+
+The plugin automatically adds the following locations to `PATH` before running `lark-cli`:
+- `~/.npm-global/bin`
+- `~/.npm/bin`
+- `/opt/homebrew/bin`
+- `/usr/local/bin`
+
+So for standard Homebrew or global npm installs, no configuration is needed.
 
 ## Covered capabilities
 
